@@ -314,7 +314,14 @@ export class KtdGridComponent
     }
 
     private _cols: number = 6;
-
+    private _allowOverlap: boolean = false;
+    @Input()
+    get allowOverlap(): boolean {
+        return this._allowOverlap;
+    }
+    set allowOverlap(overlap: boolean) {
+        this._allowOverlap = overlap;
+    }
     /** Layout of the grid. Array of all the grid items with its 'id' and position on the grid. */
     @Input()
     get layout(): KtdGridLayout {
@@ -473,7 +480,12 @@ export class KtdGridComponent
     }
 
     compactLayout() {
-        this.layout = compact(this.layout, this.compactType, this.cols);
+        this.layout = compact(
+            this.layout,
+            this.compactType,
+            this.cols,
+            this.allowOverlap
+        );
     }
 
     getItemsRenderData(): KtdDictionary<KtdGridItemRenderData<number>> {
@@ -507,7 +519,8 @@ export class KtdGridComponent
         copyConfig.layout = compact(
             copyConfig.layout,
             this.compactType,
-            this.cols
+            this.cols,
+            this.allowOverlap
         );
         this.gridCurrentHeight =
             this.height ??
@@ -857,6 +870,7 @@ export class KtdGridComponent
                                             preventCollision:
                                                 this.preventCollision,
                                             gap: this.gap,
+                                            allowOverlap: this.allowOverlap,
                                         },
                                         this.compactType,
                                         {
